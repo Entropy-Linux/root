@@ -1,0 +1,85 @@
+#!/bin/bash
+
+# szmelc etcher
+# Dependencies: dialog pv
+
+# Prompt for sudo password upfront
+sudo -v
+if [ $? -ne 0 ]; then
+  echo "Failed to obtain sudo credentials."
+  exit 1
+fi
+
+# Keep-alive: update existing sudo time stamp if set, otherwise do nothing.
+# Moved to background to prevent interference with other command's exit status
+{
+  while true; do 
+    sudo -n true
+    sleep 60
+  done
+} &
+
+# Check for required commands
+for cmd in dialog pv dd; do
+    command -v "$cmd" >/dev/null 2>&1 || { echo >&2 "This script requires '$cmd'. Please install it and run this script again."; exit 1; }
+done
+
+# Function to list devices
+list_devices() {
+  lsblk -nplo NAME,SIZE 
+}
+
+# Function to list ISO files and store them in an array
+list_isos() {
+  find . -maxdepth 1 -type f -name "*.iso"
+}
+
+# Store ISOs in an array
+iso_files=($(list_isos))
+
+# Check if no ISO files were found
+if [ ${#iso_files[@]} -eq 0 ]; then
+  dialog --title "No ISO Files Found" --msgbox "No .iso files found in the current directory.\n\nChange directory to valid path with .iso files and try again" 10 50
+  exit 1
+fi
+
+iso_menu=()
+
+# Create menu options from ISO files
+for i in "${!iso_files[@]}"; do
+  iso_menu+=("$((i+1))" "${iso_files[$i]}")
+done
+
+# Get ISO selection
+ISO_SELECTION=$(dialog --title "Select ISO" --menu "Choose an ISO file to etch:" 15 50 4 "${iso_menu[@]}" 3>&1 1>&2 2>&3)
+
+# Exit if cancelled
+if [ $? -ne 0 ]; then
+  echo "Operation cancelled."
+  exit 1
+fi
+
+# Get the actual ISO path
+ISO=${iso_files[$((ISO_SELECTION-1))]}
+
+# Get device selection
+DEVICE=$(dialog --title "Select Device" --menu "Choose a device to etch:" 15 50 4 $(list_devices) 3>&1 1>&2 2>&3)
+
+# Exit if cancelled
+if [ $? -ne 0 ]; then
+  echo "Operation cancelled."
+  exit 1
+fi
+
+# Confirmation dialog
+if dialog --title "Confirmation" --yesno "Are you sure you want to etch $(basename "$ISO") to $DEVICE?" 7 60; then
+  # Safety check for system or boot drives can be added here
+
+  # Etching ISO to device with progress bar
+  (pv -n "$ISO" | sudo dd of="$DEVICE" bs=4M status=none) 2>&1 | dialog --gauge "Etching $(basename "$ISO") to $DEVICE..." 10 70 0
+
+  # Completion dialog
+  dialog --title "Complete" --msgbox "Etching process complete!\nPress any key to exit." 7 30 && clear && echo "Thanks for choosing szmelc <3"
+else
+  echo "Operation cancelled."
+fi

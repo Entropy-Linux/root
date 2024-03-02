@@ -1,0 +1,52 @@
+#!/bin/bash
+
+# Check if ffmpeg is installed
+if ! command -v ffmpeg &> /dev/null; then
+    echo "ffmpeg could not be found!"
+    exit 1
+fi
+
+# Get the video file as input
+if [ $# -lt 1 ]; then
+    echo "Usage: $0 <video_file>"
+    exit 1
+fi
+
+VIDEO=$1
+
+# Get video duration in seconds
+DURATION=$(ffmpeg 2>&1 -i "$VIDEO" | grep 'Duration' | awk '{print $2}' | tr -d , | awk -F: '{print ($1*3600)+($2*60)+$3}')
+
+while true; do
+    clear
+    echo "Current Working Directory: $(pwd)"
+    echo "Editing File: $VIDEO"
+    echo "Length: $DURATION seconds"
+    echo "1. Trim from start"
+    echo "2. Trim from end"
+    echo "3. Exit"
+    read -p "Choose an option [1/2/3]: " OPTION
+
+    case $OPTION in
+        1)
+            read -p "Enter amount in seconds to trim from start: " TRIM_START
+            ffmpeg -i "$VIDEO" -ss $TRIM_START -c:v copy -c:a copy "${VIDEO%.*}_trimmed.${VIDEO##*.}"
+            echo "Trimmed video saved as ${VIDEO%.*}_trimmed.${VIDEO##*.}"
+            read -p "Press any key to continue..."
+            ;;
+        2)
+            read -p "Enter amount in seconds to trim from end: " TRIM_END
+            END_TIME=$(echo "$DURATION - $TRIM_END" | bc)
+            ffmpeg -i "$VIDEO" -t $END_TIME -c:v copy -c:a copy "${VIDEO%.*}_trimmed.${VIDEO##*.}"
+            echo "Trimmed video saved as ${VIDEO%.*}_trimmed.${VIDEO##*.}"
+            read -p "Press any key to continue..."
+            ;;
+        3)
+            exit 0
+            ;;
+        *)
+            echo "Invalid option!"
+            read -p "Press any key to continue..."
+            ;;
+    esac
+done

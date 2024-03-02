@@ -1,0 +1,51 @@
+#!/bin/bash
+
+# Ask user for the file name
+filename=$(dialog --inputbox "Enter the file name (with extension, like a.zip)" 15 30 'enter here' 3>&1 1>&2 2>&3)
+
+# Check that an argument was provided
+if [ -z "$filename" ]; then
+  echo "Usage: $0 [filename]"
+  exit 1
+fi
+
+# Compute the hash
+hash=$(sha256sum "$filename" | cut -d ' ' -f 1)
+
+# Check if a log file with the same name already exists
+logname="hash/sha256-$filename-1.txt"
+count=1
+while [ -e "$logname" ]
+do
+  ((count++))
+  logname="sha256-$filename-$count.txt"
+done
+
+# Write the hash to the log file
+echo "SHA256 hash for $filename: $hash" > "$logname"
+echo "Log file saved as $logname"
+
+# Create a directory to store the split files
+mkdir -p split_files
+
+# Split the file into 20MB parts
+split_size="20M"
+split -b $split_size -d --suffix-length=3 "$filename" "split_files/$(basename "$filename").part"
+
+# Calculate the number of parts created
+num_parts=$(ls split_files | grep "$(basename "$filename").part" | wc -l)
+
+# Get file size
+filesize=$(du -h "$filename" | cut -f1)
+
+# Get current datetime
+datetime=$(date '+%Y-%m-%d %H:%M:%S')
+
+# Write to a general log file
+echo "Original file: $filename" >> log.txt
+echo "File size: $filesize" >> log.txt
+echo "Split into: $num_parts parts" >> log.txt
+echo "Datetime: $datetime" >> log.txt
+echo "====================" >> log.txt
+
+echo "File split into $num_parts parts of $split_size each and stored in 'split_files' directory."

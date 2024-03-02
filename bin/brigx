@@ -1,0 +1,49 @@
+#!/bin/bash
+
+# Function to get connected screens
+get_screens() {
+    xrandr --query | grep " connected" | cut -d" " -f1
+}
+
+# Function to set brightness
+set_brightness() {
+    local screen=$1
+    local brightness=$2
+    xrandr --output "$screen" --brightness "$brightness"
+}
+
+# Main script
+main() {
+    # Get a list of connected screens
+    screens=$(get_screens)
+
+    # Prepare options for dialog
+    options=()
+    for screen in $screens; do
+        options+=("$screen" "")
+    done
+
+    # Show dialog to choose a screen
+    chosen_screen=$(dialog --clear --title "Select Screen" --menu "Choose a screen:" 15 50 4 "${options[@]}" 2>&1 >/dev/tty)
+
+    # Clear dialog
+    clear
+
+    # Exit if no screen is chosen
+    [ -z "$chosen_screen" ] && exit 1
+
+    # Ask for brightness value
+    brightness=$(dialog --clear --title "Brightness" --inputbox "Enter brightness value for $chosen_screen (0.0 - 1.0):" 8 40 2>&1 >/dev/tty)
+
+    # Clear dialog
+    clear
+
+    # Exit if no brightness is given
+    [ -z "$brightness" ] || [[ ! $brightness =~ ^[0-1](\.[0-9]+)?$ ]] && exit 1
+
+    # Set the brightness
+    set_brightness "$chosen_screen" "$brightness"
+}
+
+# Run the main function
+main

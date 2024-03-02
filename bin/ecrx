@@ -1,0 +1,32 @@
+#!/bin/bash
+
+echo "Select an option:"
+echo "1. Encrypt a file"
+echo "2. Decrypt a file"
+read -p "Enter your choice (1 or 2): " choice
+
+encrypt_file() {
+    read -p "Enter the file path to encrypt: " file_path
+    if [ ! -f "$file_path" ]; then
+        echo "File does not exist."
+        exit 1
+    fi
+    gpg -c --cipher-algo AES256 $file_path
+    echo "File encrypted successfully."
+}
+
+decrypt_file() {
+    read -p "Enter the file path to decrypt: " file_path
+    if [ ! -f "$file_path" ]; then
+        echo "File does not exist."
+        exit 1
+    fi
+    gpg --decrypt $file_path > "${file_path%.*}"
+    echo "File decrypted successfully."
+}
+
+case $choice in
+    1) encrypt_file ;;
+    2) decrypt_file ;;
+    *) echo "Invalid choice. Please enter 1 or 2." ;;
+esac

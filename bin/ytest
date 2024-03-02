@@ -1,0 +1,158 @@
+#!/bin/bash
+
+# Specify your YouTube Data API key here
+#API_KEY="AIzaSyD3w9_cMXwKk7aCDqJWJiyMKYoyI7Icyf0"
+API_KEY="AIzaSyCSVVoqQohX0L7BUIfyitjF9GrOgpA1MTE"
+
+
+# Function to clear the screen
+clear_screen() {
+    tput reset
+}
+
+# Function to search YouTube and fetch video titles
+search_youtube() {
+    local query="$1"
+    local query_string=$(echo "$query" | tr ' ' '+')
+    local url="https://www.googleapis.com/youtube/v3/search?q=$query_string&part=snippet&type=video&maxResults=20&key=$API_KEY"
+    local search_result=$(curl -s "$url")
+    if [ -z "$search_result" ]; then
+        echo "No search results found."
+        exit 1
+    fi
+    echo "$search_result" | jq -r '.items[] | "\(.id.videoId) \(.snippet.title)"'
+}
+
+# Function to fetch video duration
+fetch_video_duration() {
+    local video_id="$1"
+    local url="https://www.googleapis.com/youtube/v3/videos?id=$video_id&part=contentDetails&key=$API_KEY"
+    local video_info=$(curl -s "$url")
+    local duration=$(echo "$video_info" | jq -r '.items[0].contentDetails.duration')
+    duration="${duration//PT/}"
+    duration="${duration//H/ hours }"
+    duration="${duration//M/ minutes }"
+    duration="${duration//S/ seconds}"
+    echo "$duration"
+}
+
+# Function to display video titles with rolldown menu
+display_video_titles() {
+    clear_screen
+    local num_options=${#options[@]}
+    local max_display_lines=20  # Maximum lines to display at once
+
+    local start_line=$((selected - max_display_lines / 2))
+    local end_line=$((start_line + max_display_lines - 1))
+
+    if [ $start_line -lt 0 ]; then
+        start_line=0
+        end_line=$((max_display_lines - 1))
+    fi
+
+    if [ $end_line -ge $num_options ]; then
+        end_line=$((num_options - 1))
+        start_line=$((end_line - max_display_lines + 1))
+    fi
+
+    for i in $(seq $start_line $end_line); do
+        if [ $i -eq $selected ]; then
+            echo ""
+            echo "╭─────────────────────────────────────"
+            echo "│[$i] ${options[$i]} "
+            if [ "$video_details_mode" = "true" ]; then
+                local selected_video_id="${actions[$selected]}"
+                local duration=$(fetch_video_duration "$selected_video_id")
+                echo "│[Duration] $duration"
+            fi
+            echo "╰─────────────────────────────────────"
+            echo ""
+        else
+            echo "[$i] ${options[$i]}"
+        fi
+    done
+}
+
+# Initialize variables
+search_mode=true
+video_details_mode=false
+selected=0
+options=()
+actions=()
+
+# Main menu loop
+while true; do
+    if $search_mode; then
+        echo "YouTube Search"
+        read -p "Enter your search query: " query
+        search_result=$(search_youtube "$query")
+        if [ $? -ne 0 ]; then
+            continue
+        fi
+
+        options=()
+        actions=()
+
+        while IFS= read -r line; do
+            IFS=' ' read -r video_id title <<< "$line"
+            options+=("$title")
+            actions+=("$video_id")
+        done < <(echo "$search_result")
+
+        search_mode=false
+    fi
+
+    display_video_titles
+
+    echo ""
+    echo "Select an option:  "
+    echo "- [q] Quit"
+    echo "- [e] Play Video"
+    echo "- [s] Search Again"
+    if [ "$video_details_mode" = "false" ]; then
+        echo "- [1] Toggle Details"
+    else
+        echo "- [A] Select Previous"
+        echo "- [B] Select Next"
+    fi
+
+    read -n1 -s input
+
+    case $input in
+        'q')
+            exit
+            ;;
+        'e')
+            if [ ${#options[@]} -gt 0 ]; then
+                selected_video_id="${actions[$selected]}"
+                video_url="https://www.youtube.com/watch?v=$selected_video_id"
+                clear && figlet "Loading:"
+                echo "$video_url"
+                mpv --fs "$video_url"
+                read -p "Press Enter to continue..."
+            fi
+            ;;
+        's')
+            search_mode=true
+            video_details_mode=false
+            selected=0
+            ;;
+        '1')
+            if [ "$video_details_mode" = "false" ] && [ ${#options[@]} -gt 0 ]; then
+                video_details_mode=true
+            else
+                video_details_mode=false
+            fi
+            ;;
+        'A')  # Up arrow
+            if [ $selected -gt 0 ]; then
+                selected=$((selected - 1))
+            fi
+            ;;
+        'B')  # Down arrow
+            if [ $selected -lt $(( ${#options[@]} - 1 )) ]; then
+                selected=$((selected + 1))
+            fi
+            ;;
+    esac
+done

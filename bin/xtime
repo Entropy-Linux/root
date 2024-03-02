@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Infinite loop
+while true; do
+    # Clear the screen
+    clear
+
+    # Get the current time in HH:MM format
+    CURRENT_TIME=$(date +" %H:%M")
+
+    # Run figlet with the current time
+    figlet " $CURRENT_TIME"
+
+    # Wait for one minute before repeating
+    sleep 60
+done

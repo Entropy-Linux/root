@@ -1,0 +1,54 @@
+#!/bin/bash
+
+# Function to display usage
+usage() {
+    echo "Usage: $0 -p <path> [-e <extension>] [-r <regex pattern>]"
+    echo "  -p: Path to search in."
+    echo "  -e: File extension to search for."
+    echo "  -r: Regex pattern to match filenames."
+    exit 1
+}
+
+# Check if arguments are provided
+if [ $# -eq 0 ]; then
+    usage
+fi
+
+# Parse command-line arguments
+while getopts ":p:e:r:" opt; do
+  case $opt in
+    p) SOURCE_DIR="$OPTARG";;
+    e) EXTENSION="$OPTARG";;
+    r) REGEX="$OPTARG";;
+    \?) echo "Invalid option -$OPTARG" >&2; usage;;
+  esac
+done
+
+# Check if source directory is provided
+if [ -z "$SOURCE_DIR" ]; then
+    echo "Error: Source directory not specified."
+    usage
+fi
+
+# Find files based on extension and regex pattern
+find_files() {
+    local search_ext="$1"
+    local search_regex="$2"
+    local search_path="$3"
+
+    echo "Searching in $search_path"
+    find "$search_path" -type f \( -name "*$search_ext" -o -regex ".*$search_regex.*" \)
+}
+
+# Search and list files
+files=$(find_files "$EXTENSION" "$REGEX" "$SOURCE_DIR")
+
+# Check if any files are found
+if [ -z "$files" ]; then
+    echo "No files found."
+    exit 0
+fi
+
+# Print found files
+echo "Found files:"
+echo "$files"
