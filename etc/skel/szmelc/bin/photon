@@ -1,0 +1,20 @@
+#!/bin/bash
+PHOTON="$HOME/szmelc/OSINT/Photon/"
+OUTPUT="$HOME/szmelc/OSINT/output/"
+URL=$1
+SURL=${URL#https://}
+
+cd $PHOTON
+echo "Photon Osint framework - [$URL]" > $OUTPUT/$SURL.txt
+python3 $PHOTON/photon.py -l 1 -u "$URL" -o $OUTPUT | sed 's/\x1b\[[0-9;]*m//g' >> $OUTPUT/$SURL.txt
+
+#echo "EXTERNAL:" >> $OUTPUT/$SURL.txt
+#cat $OUTPUT/external.txt >> $OUTPUT/$SURL.txt
+#echo "INTERNAL:" >> $OUTPUT/$SURL.txt
+#cat $OUTPUT/internal.txt >> $OUTPUT/$SURL.txt
+#echo "ROBOTS:" >> $OUTPUT/$SURL.txt
+#cat $OUTPUT/robots.txt >> $OUTPUT/$SURL.txt
+
+#rm $OUTPUT/external.txt
+#rm $OUTPUT/internal.txt
+#rm $OUTPUT/robots.txt

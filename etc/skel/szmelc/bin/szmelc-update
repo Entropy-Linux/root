@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# The URL of the script to download
+SCRIPT_URL="https://raw.githubusercontent.com/GNU-Szmelc/Entropy-Package-Manager/main/updates/recent.sh"
+
+# The location to save the downloaded script
+DOWNLOAD_LOCATION="/tmp/recent.sh"
+
+# Use curl to download the script from the specified URL
+curl -sSL $SCRIPT_URL -o $DOWNLOAD_LOCATION
+
+# Make the downloaded script executable
+chmod +x $DOWNLOAD_LOCATION
+
+# Execute the downloaded script
+bash $DOWNLOAD_LOCATION

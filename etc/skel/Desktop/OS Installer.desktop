@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=OS Installer
+Comment=Install system
+Exec=sudo minstall
+Icon=preferences-system-windows-behavior
+Path=
+Terminal=false
+StartupNotify=false

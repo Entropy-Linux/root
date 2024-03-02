@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Static path to the Sherlock directory
+SHERLOCK="$HOME/szmelc/OSINT/sherlock/sherlock/"  # Update this with your Sherlock directory path
+# Static path to the output directory
+#OUTPUT="$HOME/szmelc/"  # Update this with your desired output directory path
+
+nick=$1
+clear && figlet SHERLOCK
+echo "Stalking [" $nick "]"
+cd $SHERLOCK && python3 $SHERLOCK --nsfw $nick
