@@ -1,0 +1,88 @@
+# UIP - User Installed Packages
+# Date:      Sun, 03 Mar 2024 00:36:38 +0100
+# Host:      Entropy
+# System:    Entropy-V3-Sandstone-amd64 January 21, 2024
+#
+# List of user installed packages
+# Package name                    Description
+
+7zip                              7-Zip file archiver with a high compression ratio
+apache2                           Apache HTTP Server
+baobab                            GNOME disk usage analyzer
+boxes                             textmode box- and comment drawing filter
+breeze-gtk-theme                  GTK theme built to match KDE's Breeze
+chromium-l10n                     web browser - language packs
+chromium-sandbox                  web browser - setuid security sandbox for chromium
+cmatrix                           simulates the display from "The Matrix"
+conky                             highly configurable system monitor (transitional package)
+conky-manager                     GUI for managing Conky configuration files
+conky-std                         highly configurable system monitor (default version)
+conky-toggle-mx                   simple toggle switch for conky-manager
+cowsay                            configurable talking cow
+darkblood-gtk-theme               dark GTK2/GTK3/Metacity theme
+darkcold-gtk-theme                dark GTK2/GTK3/Metacity theme
+darkfire-gtk-theme                dark GTK2/GTK3/Metacity theme
+darkmint-gtk-theme                dark GTK2/GTK3/Metacity theme
+deb-installer                     deb-installer
+devscripts                        scripts to make the life of a Debian Package maintainer easier
+dh-make                           tool that converts source archives into Debian package source
+dialog                            Displays user-friendly dialog boxes from shell scripts
+ffmpeg                            Tools for transcoding, streaming and playing of multimedia files
+figlet                            Make large character ASCII banners out of ordinary text
+file-roller                       archive manager for GNOME
+geany                             fast and lightweight IDE
+gitk                              fast, scalable, distributed revision control system (revision tree visualizer)
+grub-customizer                   GUI to configure GRUB2 and BURG
+gufw                              graphical user interface for ufw
+gvfs-backends                     userspace virtual filesystem - backends
+htop                              interactive processes viewer
+jq                                lightweight and flexible command-line JSON processor
+kleopatra                         Certificate Manager and Unified Crypto GUI
+konsole                           X terminal emulator
+libapache2-mod-php8.2             server-side, HTML-embedded scripting language (Apache 2 module)
+libparse-debcontrol-perl          parser for debian control-like files
+libreadline-dev                   GNU readline and history libraries, development files
+libsqlite3-dev                    SQLite 3 development files
+libssl-dev                        Secure Sockets Layer toolkit - development files
+lolcat                            colorful 'cat'
+mariadb-server                    MariaDB database server binaries
+mc                                Midnight Commander - a powerful file manager
+mpv                               video player based on MPlayer/mplayer2
+mugshot                           lightweight user-configuration application
+mx-conky-data                     conky themes for MX Conky
+neofetch                          Shows Linux System Information with Distribution Logo
+nmap                              The Network Mapper
+obsidian-2-gtk-theme              obsidian 2 GTK themes for MX Linux
+openttd                           reimplementation of Transport Tycoon Deluxe with enhancements
+pbuilder                          personal package builder for Debian packages
+php8.2                            server-side, HTML-embedded scripting language (metapackage)
+php8.2-mysql                      MySQL module for PHP
+php8.2-xml                        DOM, SimpleXML, XML, and XSL module for PHP
+php8.2-yaml                       YAML-1.1 parser and emitter for PHP
+plymouth-themes-mx                Extra plymouth themes packaged by MX team
+plymouth-x11                      boot animation, logger and I/O multiplexer - X11 renderer
+privoxy                           Privacy enhancing HTTP Proxy
+python3-dev                       header files and a static library for Python (default)
+python3-pip                       Python package installer
+software-properties-common        manage the repositories that you install software from (common)
+ssh                               secure shell client and server (metapackage)
+testdisk                          Partition scanner and disk recovery tool, and PhotoRec file recovery tool
+thunar-gtkhash                    thunar extension for computing checksums and more using gtkhash
+thunar-shares-plugin              quickly share a folder using Samba from Thunar
+toilet                            display large colourful characters in text mode
+transmission                      lightweight BitTorrent client
+vlc                               multimedia player and streamer
+xfce4-clipman                     clipboard history utility
+xfce4-cpufreq-plugin              cpufreq information plugin for the Xfce4 panel
+xfce4-cpugraph-plugin             CPU load graph plugin for the Xfce4 panel
+xfce4-diskperf-plugin             disk performance display plugin for the Xfce4 panel
+xfce4-netload-plugin              network load monitor plugin for the Xfce4 panel
+xfce4-notes-plugin                Notes plugin for the Xfce4 desktop
+xfce4-sensors-plugin              hardware sensors plugin for the Xfce4 panel
+xfce4-smartbookmark-plugin        search the web via the Xfce4 panel
+xfce4-systemload-plugin           system load monitor plugin for the Xfce4 panel
+xfce4-timer-plugin                timer plugin for Xfce panel
+xfce4-verve-plugin                Verve (command line) plugin for Xfce panel
+xfce4-weather-plugin              weather information plugin for the Xfce4 panel
+yt-dlp                            downloader of videos from YouTube and other sites
+zenity                            Display graphical dialog boxes from shell scripts
