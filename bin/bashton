@@ -1,0 +1,56 @@
+#!/bin/bash
+# Szmelc Prefix for both Bash & Python3
+# `bashton $.py / $.sh`
+# ADD TO $PATH TO WORK
+
+file="$1"
+
+if [[ ! -f "$file" ]]; then
+    echo "File not found: $file"
+    exit 1
+fi
+
+# Function to determine file type
+get_file_type() {
+    case "$(file -b --mime-type "$1")" in
+        text/x-shellscript)
+            echo "shell"
+            ;;
+        text/x-python)
+            echo "python"
+            ;;
+        *)
+            echo "unknown"
+            ;;
+    esac
+}
+
+file_type=""
+
+# Check if the file has an extension
+if [[ "$file" == *.* ]]; then
+    case "$file" in
+        *.sh)
+            file_type="shell"
+            ;;
+        *.py)
+            file_type="python"
+            ;;
+    esac
+else
+    file_type=$(get_file_type "$file")
+fi
+
+# Execute file based on its type
+case "$file_type" in
+    shell)
+        bash "$file" "${@:2}"
+        ;;
+    python)
+        python3 "$file" "${@:2}"
+        ;;
+    *)
+        echo "Unsupported file type"
+        exit 1
+        ;;
+esac

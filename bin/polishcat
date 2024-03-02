@@ -1,0 +1,37 @@
+#!/bin/bash
+
+polishcat() {
+  if [ -z "$1" ]; then
+    echo "Usage: polishcat <file>"
+    return 1
+  fi
+
+  local file="$1"
+
+  if [ -e "$file" ]; then
+    local total_lines=$(wc -l < "$file")
+    local half_lines=$((total_lines / 2))
+
+    local white_lines=$(head -n "$half_lines" "$file")
+    local red_lines=$(tail -n +"$((half_lines + 1))" "$file")
+
+    # Output the white lines with ANSI escape codes for white
+    printf "%b" "$(tput setaf 7)$white_lines$(tput sgr0)"
+
+    # Sleep for 0.1 seconds
+    sleep 0.1
+
+    # Output a newline and then the red lines with ANSI escape codes for red
+    printf "\n%b" "$(tput setaf 1)$red_lines$(tput sgr0)"
+  else
+    echo "File not found: $file"
+    return 1
+  fi
+}
+
+# Check if a filename is provided as an argument
+if [ -n "$1" ]; then
+  polishcat "$1"
+else
+  echo "Usage: polishcat <file>"
+fi

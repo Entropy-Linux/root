@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# Usage: ./script.sh <search_directory> <keyword> <target_directory>
+
+search_dir="$1"
+keyword="$2"
+target_dir="$3"
+log_file="log.txt"
+
+# Check if the correct number of arguments is provided
+if [ "$#" -ne 3 ]; then
+    echo "Usage: $0 <search_directory> <keyword> <target_directory>"
+    exit 1
+fi
+
+# Check if search directory exists
+if [ ! -d "$search_dir" ]; then
+    echo "Search directory does not exist: $search_dir"
+    exit 1
+fi
+
+# Check if target directory exists, if not create it
+if [ ! -d "$target_dir" ]; then
+    echo "Target directory does not exist, creating: $target_dir"
+    mkdir -p "$target_dir"
+fi
+
+# Search for files with keyword in name, path or contents
+# and copy them to target directory
+find "$search_dir" -type f \( -iname "*$keyword*" -exec sh -c '
+    file="$1"
+    cp "$file" "'"$target_dir"'"
+    echo "Copied: $file" >> "'"$log_file"'"
+' sh {} \; -o -exec grep -il "$keyword" {} \; -exec sh -c '
+    file="$1"
+    cp "$file" "'"$target_dir"'"
+    echo "Copied: $file" >> "'"$log_file"'"
+' sh {} \; \) 
+
+echo "Search and copy completed. Check log.txt for details."

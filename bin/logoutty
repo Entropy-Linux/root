@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# Check if the script is run with superuser privileges
+if [ "$EUID" -ne 0 ]; then
+  echo "Please run as root"
+  exit
+fi
+
+# Get the TTY number from the user
+read -p "Enter the TTY number to log out (e.g., 1 for tty1): " tty_number
+
+# Check if the input is a number
+if ! [[ "$tty_number" =~ ^[0-9]+$ ]]; then
+  echo "Invalid TTY number. Please enter a valid number."
+  exit 1
+fi
+
+# Construct the TTY device name
+tty_device="tty$tty_number"
+
+# Check if the TTY exists
+if [ ! -c /dev/$tty_device ]; then
+  echo "TTY $tty_device does not exist."
+  exit 1
+fi
+
+# Find the process ID of the shell running in the specified TTY
+pid=$(ps aux | grep -E "[\s/]-bash" | grep "$tty_device" | awk '{print $2}')
+
+# Check if a process ID was found
+if [ -z "$pid" ]; then
+  echo "No bash process found on $tty_device."
+  exit 1
+fi
+
+# Send HUP signal to the process to log out
+kill -HUP $pid
+
+echo "Logged out of $tty_device."

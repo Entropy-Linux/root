@@ -1,0 +1,70 @@
+#!/bin/bash
+
+# MAKE SURE pm-utils sysvinit and dialog are installed
+sudo -v
+
+# Define the power action function
+perform_action() {
+    action=$1
+    delay=$2
+
+    if [ "$delay" == "NOW" ]; then
+        echo "Executing: sudo $action"
+        sudo $action
+    else
+        echo "System will execute $1 in $delay seconds..."
+        sudo sh -c "sleep $delay; $action"
+    fi
+}
+
+# Main menu using dialog
+CHOICE=$(dialog --clear --backtitle "Power Management" --title "Choose Action" \
+        --menu "Select a power action:" 15 50 4 \
+        "1" "Shutdown" \
+        "2" "Reboot" \
+        "3" "Sleep" \
+        "4" "Hibernate" 2>&1 >/dev/tty)
+
+# Cancelled menu
+if [ "$?" -ne "0" ]; then
+    exit 0
+fi
+
+# Secondary menu for timing
+TIME_CHOICE=$(dialog --clear --backtitle "Timing" --title "Choose Timing" \
+             --menu "Select when to perform the action:" 15 50 3 \
+             "1" "NOW" \
+             "2" "DELAY" 2>&1 >/dev/tty)
+
+# Cancelled menu
+if [ "$?" -ne "0" ]; then
+    exit 0
+fi
+
+# Handling delay
+if [ "$TIME_CHOICE" == "2" ]; then
+    DELAY=$(dialog --title "Enter Delay" --inputbox "Enter delay in seconds:" 8 40 2>&1 >/dev/tty)
+    if [ "$?" -ne "0" ]; then
+        exit 0
+    fi
+else
+    DELAY="NOW"
+fi
+
+# Perform the selected action
+case $CHOICE in
+    1)
+        perform_action "shutdown -h now" "$DELAY"
+        ;;
+    2)
+        perform_action "shutdown -r now" "$DELAY"
+        ;;
+    3)
+        perform_action "pm-suspend" "$DELAY"
+        ;;
+    4)
+        perform_action "pm-hibernate" "$DELAY"
+        ;;
+esac
+
+clear
