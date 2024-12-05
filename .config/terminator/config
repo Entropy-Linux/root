@@ -1,0 +1,73 @@
+[global_config]
+  handle_size = 2
+  geometry_hinting = True
+  tab_position = bottom
+  scroll_tabbar = True
+  inactive_color_offset = 0.9135802469135802
+  enabled_plugins = LaunchpadBugURLHandler, LaunchpadCodeURLHandler, APTURLHandler, CustomCommandsMenu, TerminalShot, CurrDirOpen
+  always_split_with_profile = True
+  putty_paste_style_source_clipboard = True
+  cell_width = 1.2
+  cell_height = 1.2
+  link_single_click = True
+[keybindings]
+[profiles]
+  [[default]]
+    audible_bell = True
+    visible_bell = True
+    urgent_bell = True
+    background_darkness = 0.68
+    background_type = transparent
+    cursor_shape = ibeam
+    cursor_fg_color = "#000000"
+    cursor_bg_color = "#aaaaaa"
+    cursor_color_default = False
+    font = JetBrainsMonoNL Nerd Font Propo 10
+    foreground_color = "#0fa363"
+    show_titlebar = False
+    scrollbar_position = hidden
+    scrollback_infinite = True
+    palette = "#000000:#aa0000:#00aa00:#aa5500:#0000aa:#aa00aa:#00aaaa:#aaaaaa:#555555:#ff5555:#55ff55:#ffff55:#5555ff:#ff55ff:#55ffff:#ffffff"
+    use_system_font = False
+    title_hide_sizetext = True
+    title_transmit_fg_color = "#26a269"
+    title_transmit_bg_color = "#613583"
+    title_receive_fg_color = "#e5a50a"
+    title_receive_bg_color = "#613583"
+    title_inactive_bg_color = "#241f31"
+    title_use_system_font = False
+    title_font = zowie eYe/FS Bold 9
+  [[Entropy]]
+    audible_bell = True
+    visible_bell = True
+    urgent_bell = True
+    background_darkness = 0.77
+    background_type = transparent
+    background_image = /home/szmelc/Downloads/giphy.gif
+    cursor_shape = ibeam
+    cursor_fg_color = "#000000"
+    cursor_bg_color = "#aaaaaa"
+    cursor_color_default = False
+    font = JetBrainsMonoNL Nerd Font Propo Ultra-Light 11
+    foreground_color = "#0fa363"
+    show_titlebar = False
+    scrollbar_position = hidden
+    scrollback_infinite = True
+    palette = "#001f19:#dc322f:#613583:#26a269:#268bd2:#d33682:#2aa198:#eee8d5:#e1a812:#57e389:#e300e3:#657b83:#12cb46:#26a269:#de0000:#ffffff"
+    use_system_font = False
+    title_hide_sizetext = True
+    title_transmit_fg_color = "#26a269"
+    title_transmit_bg_color = "#613583"
+    title_receive_fg_color = "#e5a50a"
+    title_receive_bg_color = "#613583"
+    title_inactive_bg_color = "#241f31"
+[layouts]
+  [[default]]
+    [[[window0]]]
+      type = Window
+      parent = ""
+    [[[child1]]]
+      type = Terminal
+      parent = window0
+      profile = default
+[plugins]
